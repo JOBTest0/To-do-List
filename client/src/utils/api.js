@@ -39,7 +39,11 @@ export const fetchTodos = async (token) => {
         },
     });
 
-    if (!res.ok) throw new Error("Failed to fetch tasks");
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to fetch tasks");
+    }
+
     return res.json();
 };
 
@@ -57,7 +61,11 @@ export const addTodo = async (taskData, token) => {
         body: JSON.stringify(taskData),
     });
 
-    if (!res.ok) throw new Error("Failed to add task");
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to add todo");
+    }
+
     return res.json();
 };
 
@@ -81,19 +89,23 @@ export const updateTodo = async (id, updates, token) => {
 
 export const deleteTodo = async (id, token) => {
     if (!id || !token) {
-        throw new Error("Todo ID and token are required");
+      throw new Error("Todo ID and token are required");
     }
-
+  
     const res = await fetch(`${BASE_URL}/${id}`, {
-        method: "DELETE",
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
-
-    if (!res.ok) throw new Error("Failed to delete task");
-};
+  
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || "Failed to delete task");
+    }
+  };
+  
 
 export const fetchTodo = async (todoId) => {
     if (!todoId) {
