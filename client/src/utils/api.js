@@ -70,10 +70,6 @@ export const addTodo = async (taskData, token) => {
 };
 
 export const updateTodo = async (id, updates, token) => {
-    if (!id || !updates || !token) {
-        throw new Error("Todo ID, updates, and token are required");
-    }
-
     const res = await fetch(`${BASE_URL}/${id}`, {
         method: "PUT",
         headers: {
@@ -83,29 +79,33 @@ export const updateTodo = async (id, updates, token) => {
         body: JSON.stringify(updates),
     });
 
-    if (!res.ok) throw new Error("Failed to update task");
-    return res.json();
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to update task");
+    }
+
+    return res.json(); // ตรวจสอบว่าข้อมูลที่ส่งคืนคือ Task ที่อัปเดตแล้ว
 };
 
 export const deleteTodo = async (id, token) => {
     if (!id || !token) {
-      throw new Error("Todo ID and token are required");
+        throw new Error("Todo ID and token are required");
     }
-  
+
     const res = await fetch(`${BASE_URL}/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
     });
-  
+
     if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.error || "Failed to delete task");
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to delete task");
     }
-  };
-  
+};
+
 
 export const fetchTodo = async (todoId) => {
     if (!todoId) {
@@ -133,4 +133,3 @@ export const fetchTodo = async (todoId) => {
         throw error;
     }
 };
-

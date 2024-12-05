@@ -1,42 +1,31 @@
-import React from "react";
+import React from 'react'
 
 const TaskItem = ({ task, onEdit, onDelete }) => {
   return (
     <li
       className={`p-4 rounded-lg shadow-md ${
-        task.completed ? "bg-green-100" : "bg-base-100"
+        task.completed ? 'bg-green-100' : 'bg-base-100'
       }`}
     >
-      {/* ชื่อเรื่องของ Task */}
       <h3 className="text-xl font-bold">
-        {task.title}{" "}
+        {task.title}{' '}
         <span
           className={`badge ${
-            task.priority === "High"
-              ? "badge-error"
-              : task.priority === "Medium"
-              ? "badge-warning"
-              : "badge-success"
+            task.priority === 'High'
+              ? 'badge-error'
+              : task.priority === 'Medium'
+              ? 'badge-warning'
+              : 'badge-success'
           }`}
         >
           {task.priority}
         </span>
       </h3>
-
-      {/* คำอธิบายของ Task */}
       <p className="mt-2 text-gray-700">{task.description}</p>
-
-      {/* ปุ่มจัดการ Task */}
       <div className="flex gap-4 mt-4">
-        {/* ปุ่ม Edit */}
-        <button
-          onClick={() => onEdit(task)}
-          className="btn btn-sm btn-warning"
-        >
+        <button onClick={() => onEdit(task)} className="btn btn-sm btn-warning">
           Edit
         </button>
-
-        {/* ปุ่ม Delete */}
         <button
           onClick={() => onDelete(task._id)}
           className="btn btn-sm btn-error"
@@ -45,7 +34,7 @@ const TaskItem = ({ task, onEdit, onDelete }) => {
         </button>
       </div>
     </li>
-  );
-};
+  )
+}
 
-export default TaskItem;
+export default TaskItem

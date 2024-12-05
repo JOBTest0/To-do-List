@@ -22,6 +22,13 @@ const todoSchema = new mongoose.Schema(
             enum: ["Low", "Medium", "High"],
             default: "Low",
         },
+        isRewarded: {
+            type: Boolean,
+            default: false, // สถานะว่างานนี้ได้รับรางวัลแล้วหรือยัง
+        },
+        reward: {
+            coins: { type: Number, default: 0 }, // จำนวน Coin ที่ได้รับ
+        },
     },
     {
         timestamps: true, // สร้างฟิลด์ createdAt, updatedAt อัตโนมัติ

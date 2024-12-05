@@ -1,6 +1,7 @@
 import express from "express";
 import AuthRoute from "./routes/auth.js";
 import TodoRoute from "./routes/todo.js";
+import rewardRoutes from "./routes/reward.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -25,6 +26,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api/user", AuthRoute);
 app.use("/api/todos", TodoRoute);
+app.use("/api/rewards", rewardRoutes);
 
 app.get("/", (req, res) => {
     res.send("To Do List Challenge");
