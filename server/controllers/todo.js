@@ -32,7 +32,8 @@ export async function updateTodo(req, res, next) {
     const id = req.params.id;
 
     try {
-        await connectToDB()
+        await connectToDB();
+
         // ค้นหา Todo ก่อนอัปเดต
         const todo = await Todo.findById(id);
 
@@ -49,11 +50,31 @@ export async function updateTodo(req, res, next) {
         todo.title = title || todo.title;
         todo.isCompleted = isCompleted !== undefined ? isCompleted : todo.isCompleted;
 
-        // หาก Priority เปลี่ยน ให้ปรับ Coin ใหม่
+        // อัปเดต isRewarded อัตโนมัติเมื่อ isCompleted เป็น true
+        if (todo.isCompleted && !todo.isRewarded) {
+            todo.isRewarded = true;
+
+            // คำนวณ Coin ใหม่ตาม Priority
+            switch (priority || todo.priority) {
+                case "Low":
+                    todo.reward.coins = 3;
+                    break;
+                case "Medium":
+                    todo.reward.coins = 5;
+                    break;
+                case "High":
+                    todo.reward.coins = 10;
+                    break;
+                default:
+                    todo.reward.coins = 0;
+            }
+        }
+
+        // หาก Priority เปลี่ยน ให้ปรับ Coins
         if (priority && priority !== todo.priority) {
             todo.priority = priority;
 
-            // คำนวณ Coin ใหม่ตาม Priority
+            // อัปเดต Coins ตาม Priority ใหม่
             switch (priority) {
                 case "Low":
                     todo.reward.coins = 3;
@@ -65,18 +86,19 @@ export async function updateTodo(req, res, next) {
                     todo.reward.coins = 10;
                     break;
                 default:
-                    todo.reward.coins = 0; // ค่าเริ่มต้น (กรณีไม่มี Priority)
+                    todo.reward.coins = 0;
             }
         }
 
         // บันทึกข้อมูลหลังจากอัปเดต
         const updatedTodo = await todo.save();
 
-        res.status(200).json(updatedTodo); // ส่งข้อมูลที่อัปเดตกลับไป
+        res.status(200).json(updatedTodo);
     } catch (error) {
         next(error);
     }
 }
+
 
 
 
@@ -103,6 +125,7 @@ export async function addTodo(req, res, next) {
     }
 
     try {
+        await connectToDB()
         let coins = 0;
 
         // คำนวณจำนวน Coin ตาม Priority
